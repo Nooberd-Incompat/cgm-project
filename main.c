@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <GL/glut.h>
 #include <math.h>
+#include <string.h>
 #include <stdbool.h>
 #define GL_SILENCE_DEPRECATION
 
@@ -91,7 +92,7 @@ void displayRasterText(float x, float y, float z, char *string) {
 }
 
 void init(void) {
-    glClearColor(0.0, 0.0, 0.0, 0);
+    glClearColor(0.2f, 0.0f, 0.3f, 0.0f);  // Cosmic purple
     glColor3f(1.0, 0.0, 0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -101,108 +102,166 @@ void init(void) {
 
 void introScreen()
 {
-	glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-		glColor3f(1.0, 0.0, 0.0);
-	displayRasterText(-425, 490, 0.0,"NMAM INSTITUTE OF TECHNOLOGY");
-		glColor3f(1.0, 1.0, 1.0);
-	displayRasterText(-700, 385, 0.0,"DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING");
-		glColor3f(0.0, 0.0, 1.0);
-	displayRasterText(-225, 300, 0.0,"A MINI PROJECT ON ");
-		glColor3f(1.0, 0.0, 1.0);
-	displayRasterText(-125, 225, 0.0,"Space Shooter");
-   		glColor3f(1.0, 0.7, 0.8);
-	displayRasterText(-100, 150, 0.0,"created by");
-		glColor3f(1.0, 1.0, 1.0);
-	 displayRasterText(-130, 80, 0.0,"SHOOTERS");
-	 	glColor3f(1.0, 0.0, 0.0);
-	  displayRasterText(-800, -100, 0.0," STUDENT NAMES");
-	  	glColor3f(1.0, 1.0, 1.0);
-	displayRasterText(-800, -200, 0.0," Saurav N Shetty");
-	displayRasterText(-800, -285, 0.0," Rajath R Pai");
-		glColor3f(1.0, 0.0, 0.0);
-	displayRasterText(500, -100, 0.0,"Under the Guidance of");
-		glColor3f(1.0, 1.0, 1.0);
-	displayRasterText(500, -200, 0.0,"Prof X");
-		glColor3f(1.0, 0.0, 0.0);
-	displayRasterText(-250, -400, 0.0,"Academic Year 2020-2021");
-        glColor3f(1.0, 1.0, 1.0);
-	displayRasterText(-300, -550, 0.0,"Press ENTER to start the game");
-	glFlush();
- 	glutSwapBuffers();
+    // Title in a soft blue color
+    glColor3f(0.0, 0.5, 0.9);
+    displayRasterText(-700, 490, 0.0, "INDIAN INSTITUTE OF INFORMATION TECHNOLOGY, SRI CITY");
+
+    // Department in light gray
+    glColor3f(0.8, 0.8, 0.8);
+    displayRasterText(-650, 385, 0.0, "DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING");
+
+    // Game name in a bright yellow
+    glColor3f(1.0, 0.9, 0.2);
+    displayRasterText(-100, 300, 0.0, "Space Shooter");
+
+    // Creator text in a soft teal color
+    glColor3f(0.0, 0.8, 0.7);
+    displayRasterText(-60, 150, 0.0, "created by");
+
+    // Student names and IDs on the left in a bright purple
+    glColor3f(0.7, 0.3, 1.0);
+    displayRasterText(-800, -100, 0.0, "Yojith Kaustabh");
+    displayRasterText(-800, -185, 0.0, "S20220010201");
+    displayRasterText(-800, -300, 0.0, "Sathyam A");
+    displayRasterText(-800, -385, 0.0, "S20220010197");
+
+    // Student names and IDs on the right in an orange tone
+    glColor3f(1.0, 0.6, 0.2);
+    displayRasterText(500, -100, 0.0, "Amodini AP");
+    displayRasterText(500, -185, 0.0, "S20220010014");
+    displayRasterText(500, -300, 0.0, "Aditya Pande");
+    displayRasterText(500, -385, 0.0, "S20220010007");
+
+    // Start game prompt in white
+    glColor3f(1.0, 1.0, 1.0);
+    displayRasterText(-260, -550, 0.0, "Press ENTER to start the game");
+
+    // Draw a box around the text content in soft pink
+    glColor3f(0.9, 0.4, 0.7);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(-850, 550);  // Top-left corner
+    glVertex2f(850, 550);   // Top-right corner
+    glVertex2f(850, -600);  // Bottom-right corner
+    glVertex2f(-850, -600); // Bottom-left corner
+    glEnd();
+
+    glFlush();
+    glutSwapBuffers();
+}
+
+void drawButton(float x, float y, float width, float height, char* text, int isHovered) {
+    // Button background
+    if (isHovered) {
+        glColor3f(1.0f, 0.8f, 0.0f);  // Bright yellow when hovered
+    } else {
+        glColor3f(0.8f, 0.6f, 0.0f);  // Darker yellow normally
+    }
+    
+    glBegin(GL_POLYGON);
+    glVertex2f(x - width/2, y);
+    glVertex2f(x - width/2, y + height);
+    glVertex2f(x + width/2, y + height);
+    glVertex2f(x + width/2, y);
+    glEnd();
+    
+    // Button border
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glLineWidth(2.0f);
+    glBegin(GL_LINE_LOOP);
+    glVertex2f(x - width/2, y);
+    glVertex2f(x - width/2, y + height);
+    glVertex2f(x + width/2, y + height);
+    glVertex2f(x + width/2, y);
+    glEnd();
+    glLineWidth(1.0f);
+    
+    // Button text
+    glColor3f(0.0f, 0.0f, 0.0f);
+    displayRasterText(x - strlen(text)*15, y + height/2 - 10, 0.4, text);
 }
 
 void startScreenDisplay()
 {
-	glLineWidth(10);
-	//SetDisplayMode(MENU_SCREEN);
-
-	glColor3f(1,0,0);
-	glBegin(GL_LINE_LOOP);               //Border
-		glVertex2f(-750 ,-500);
-		glVertex2f(-750 ,550);
-		glVertex2f(750 ,550);
-		glVertex2f(750 ,-500);
-	glEnd();
-
-	glLineWidth(1);
-
-	glColor3f(1, 1, 0);
-	glBegin(GL_POLYGON);				//START GAME PLOYGON
-		glVertex2f(-200 ,300);
-		glVertex2f(-200 ,400);
-		glVertex2f(200 ,400);
-		glVertex2f(200 ,300);
-	glEnd();
-
-	glBegin(GL_POLYGON);				//INSTRUCTIONS POLYGON
-		glVertex2f(-200, 50);
-		glVertex2f(-200 ,150);
-		glVertex2f(200 ,150);
-		glVertex2f(200 ,50);
-	glEnd();
-
-	glBegin(GL_POLYGON);				//QUIT POLYGON
-		glVertex2f(-200 ,-200);
-		glVertex2f(-200 ,-100);
-		glVertex2f(200, -100);
-		glVertex2f(200, -200);
-	glEnd();
-
-	if(mouseX>=-100 && mouseX<=100 && mouseY>=150 && mouseY<=200){
-		glColor3f(0 ,0 ,1) ;
-		if(mButtonPressed){
-			alienLife1 = alienLife2 = 100;
-			viewPage = GAME;
-			mButtonPressed = false;
-		}
-	} else
-		glColor3f(0 , 0, 0);
-
-	displayRasterText(-100 ,340 ,0.4 ,"Start Game");
-
-	if(mouseX>=-100 && mouseX<=100 && mouseY>=30 && mouseY<=80) {
-		glColor3f(0 ,0 ,1);
-		if(mButtonPressed){
-			viewPage = INSTRUCTIONS;
-			printf("button pressed bitch\n");
-			mButtonPressed = false;
-		}
-	} else
-		glColor3f(0 , 0, 0);
-	displayRasterText(-120 ,80 ,0.4 ,"Instructions");
-
-	if(mouseX>=-100 && mouseX<=100 && mouseY>=-90 && mouseY<=-40){
-		glColor3f(0 ,0 ,1);
-		if(mButtonPressed){
-			mButtonPressed = false;
-			exit(0);
-		}
-	}
-	else
-		glColor3f(0 , 0, 0);
-	displayRasterText(-100 ,-170 ,0.4 ,"    Quit");
-	glutPostRedisplay();
+    #define BORDER_WIDTH 10.0f
+    #define BUTTON_WIDTH 400.0f
+    #define BUTTON_HEIGHT 100.0f
+    
+    // Static strings for buttons
+    static char startText[] = "Start Game";
+    static char instructText[] = "Instructions";
+    static char quitText[] = "Quit";
+    static char titleText[] = "SPACE SHOOTER";
+    
+    // Draw background
+    glColor3f(0.1f, 0.1f, 0.2f);  // Dark blue-gray background
+    glBegin(GL_QUADS);
+    glVertex2f(-750, -500);
+    glVertex2f(-750, 550);
+    glVertex2f(750, 550);
+    glVertex2f(750, -500);
+    glEnd();
+    
+    // Draw border
+    glLineWidth(BORDER_WIDTH);
+    glBegin(GL_LINE_LOOP);
+    glColor3f(1.0f, 0.0f, 0.0f);  // Red
+    glVertex2f(-750, -500);
+    glColor3f(1.0f, 0.5f, 0.0f);  // Orange
+    glVertex2f(-750, 550);
+    glColor3f(1.0f, 0.0f, 0.0f);  // Red
+    glVertex2f(750, 550);
+    glColor3f(1.0f, 0.5f, 0.0f);  // Orange
+    glVertex2f(750, -500);
+    glEnd();
+    glLineWidth(1.0f);
+    
+    // Draw title
+    glColor3f(1.0f, 1.0f, 1.0f);
+    displayRasterText(-200, 480, 0.8, titleText);
+    
+    // Start Game Button - centered at y=300
+    int startHovered = (mouseX >= -BUTTON_WIDTH/2 && mouseX <= BUTTON_WIDTH/2 && 
+                       mouseY >= 100 && mouseY <= 100 + BUTTON_HEIGHT);
+    drawButton(0, 300, BUTTON_WIDTH, BUTTON_HEIGHT, startText, startHovered);
+    if (startHovered && mButtonPressed) {
+        alienLife1 = alienLife2 = 100;
+        viewPage = GAME;
+        mButtonPressed = 0;
+    }
+    
+    // Instructions Button - centered at y=50
+    int instructHovered = (mouseX >= -BUTTON_WIDTH/2 && mouseX <= BUTTON_WIDTH/2 && 
+                         mouseY >= 40 && mouseY <= 40 + BUTTON_HEIGHT);
+    drawButton(0, 50, BUTTON_WIDTH, BUTTON_HEIGHT, instructText, instructHovered);
+    if (instructHovered && mButtonPressed) {
+        viewPage = INSTRUCTIONS;
+        mButtonPressed = 0;
+    }
+    
+    // Quit Button - centered at y=-200
+    int quitHovered = (mouseX >= -BUTTON_WIDTH/2 && mouseX <= BUTTON_WIDTH/2 && 
+                      mouseY >= -100 && mouseY <= -100 + BUTTON_HEIGHT);
+    drawButton(0, -200, BUTTON_WIDTH, BUTTON_HEIGHT, quitText, quitHovered);
+    if (quitHovered && mButtonPressed) {
+        mButtonPressed = 0;
+        exit(0);
+    }
+    
+    // // Draw stars in background
+    // int i;
+    // for (i = 0; i < 50; i++) {
+    //     float x = -700 + (i * 30);
+    //     float y = -400 + sin(x/100.0f) * 200;
+    //     glPointSize(2.0f);
+    //     glColor3f(1.0f, 1.0f, 1.0f);
+    //     glBegin(GL_POINTS);
+    //     glVertex2f(x, y);
+    //     glEnd();
+    // }
+    
+    glutPostRedisplay();
 }
 
 void backButton() {
